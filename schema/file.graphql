@@ -1,0 +1,12 @@
+scalar FileType
+
+type File {
+  id: ID!
+  name: String!
+  url: String
+  path: String!
+  size: Int!
+  desc: String
+  type: FileType
+  extention: String!
+}

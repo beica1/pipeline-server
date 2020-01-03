@@ -1,0 +1,41 @@
+scalar Priority
+scalar TaskState
+scalar Action
+scalar Sort
+
+type Activity {
+  id: ID!
+  actor: User
+  date: Date
+  action: Action
+  content: String
+}
+
+type Task {
+  id: ID!
+  owner: User
+  createTime: Date!
+  title: String!
+  files: [File!]!
+  actors: [User!]!
+  priority: Priority!
+  schedule: Schedule!
+  states: [TaskState!]!
+  acts: [Activity]
+}
+
+input TaskInput {
+  state: TaskState
+  """
+  userId Id
+  """
+  owner: String
+  actor: String
+  priority: Priority
+  sort: Sort
+}
+
+extend type Query {
+  task(taskId: ID!): Task!
+  tasks(filter: TaskInput): [Task]!
+}

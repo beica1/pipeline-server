@@ -1,0 +1,21 @@
+scalar Date
+scalar Gender
+
+type User {
+  id: ID!
+  name: String
+  role: Role
+  avatar: String
+  gender: Gender
+  regTime: Date
+  tasks: [Task]!
+}
+
+extend type Query {
+  me: User
+  user(userId: ID!): User
+}
+
+extend type Mutation {
+  login: User
+}

@@ -1,0 +1,6 @@
+type Schedule {
+  start: Date
+  end: Date
+  actor: User
+  state: TaskState
+}
