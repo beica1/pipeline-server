@@ -4,19 +4,16 @@
  */
 const R = require('ramda')
 const jwt = require('jsonwebtoken')
-const { guid } = require('../util/common')
+const ejwt = require('express-jwt')
+const { guid, raiseError } = require('../util/common')
+const { login } = require('../db/user')
+const { ROLE } = require('../enum')
 
 const PRIVATE_KEY = 'C5X79422-C9C9-BE84-BC0E-3C3FD93202D6'
 
 const jwtOpts = {
   expiresIn: '1day'
 }
-
-module.exports.PRIVATE_KEY = PRIVATE_KEY
-
-module.exports.authenticate = token => {}
-
-module.exports.isBoss = token => {}
 
 module.exports.onError = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
@@ -26,29 +23,66 @@ module.exports.onError = (err, req, res, next) => {
   }
 }
 
-module.exports.login = (args, res) => {
-  const user = {
-    jti: guid(),
-    iss: 'PPS',
-    user: 'cd'
+/**
+ * jwt token sign
+ * @param user
+ * @returns {undefined|*}
+ */
+const sign = user => jwt.sign({
+  jti: guid(),
+  iss: 'PPS',
+  ...user
+}, PRIVATE_KEY, jwtOpts)
+
+/**
+ * use login by userName and pwd
+ * @param obj
+ * @param args
+ * @param res
+ * @returns {Promise<{roles: [number], name: string, userId: number}>}
+ */
+module.exports.login = async (obj, args, { res }) => {
+  try {
+    const loggedUser = await login(args)
+    const token = sign(loggedUser)
+    res.cookie('token', token)
+    return loggedUser
+  } catch (e) {
+    raiseError(e)
   }
-  
-  return new Promise((resolve, reject) => {
-    jwt.sign(user, PRIVATE_KEY, jwtOpts, (err, token) => {
-      if (!err) {
-        res.cookie('token', token)
-        resolve({
-          id: 'jojo'
-        })
-      } else {
-        reject(err)
-      }
-    })
-  })
 }
 
-module.exports.parseToken = R.pipe(
+/**
+ * use login by constant auth code
+ * @param obj
+ * @param code
+ * @param res
+ * @returns {Promise<{roles: [number], name: string, userId: number}>}
+ */
+module.exports.auth = async (obj, { code }, { res }) => {
+  if (code === PRIVATE_KEY) {
+    const user = {
+      userId: 0,
+      name: 'Admin',
+      roles: [ROLE.SUPER_ADMIN]
+    }
+    const token = sign(user)
+    res.cookie('token', token)
+    return user
+  } else {
+    raiseError(new Error('auth code is invalid'))
+  }
+}
+
+const parseToken = R.pipe(
   R.pathOr('', ['headers', 'cookie']),
   R.match(/token=([^;]+)/),
   R.nth(1)
 )
+
+module.exports.authMiddleware = ejwt({
+  secret: PRIVATE_KEY,
+  getToken: parseToken
+}).unless({
+  path: ['/api/login', /\/api\/\/open.*/, /.*\/jsonp$/]
+})

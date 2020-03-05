@@ -1,21 +1,46 @@
 scalar Date
 scalar Gender
+scalar ExpiredType
 
 type User {
-  id: ID!
-  name: String
-  role: Role
+  userId: ID!
+  roles: [Role]!
+  name: String!
   avatar: String
   gender: Gender
   regTime: Date
-  tasks: [Task]!
+  groups: [Group]
+  tasks: [Task]
+  expiredIn: Date
 }
 
 extend type Query {
   me: User
+  users: [User]!
   user(userId: ID!): User
 }
 
+input InputUserRole {
+  roleId: ID!
+  name: String!
+}
+
+input InputUserGroup {
+  groupId: ID!
+  name: String!
+}
+
+input InputUser {
+  name: String!
+  roles: [InputUserRole]!
+  groups: [InputUserGroup]!
+  expiredIn: Date
+}
+
 extend type Mutation {
-  login: User
+  login(user: String!, pwd: String!): User!
+  auth(code: String!): User!
+  addUser(user: InputUser!): User!
+  updateUser(userId: ID!, user: InputUser!): ID!
+  removeUser(userId: ID!): ID!
 }

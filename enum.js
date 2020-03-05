@@ -2,46 +2,44 @@
  * enum.js of pipleline-server
  * Created by beica on 2020/1/2
  */
+const R = require('ramda')
+const rolesConfig = require('./config/roles')
+
 module.exports.GENDER = {
-  FEMALE: 0,
-  MALE: 1
+  FEMALE: { value: 0 },
+  MALE: { value: 1 }
 }
 
 module.exports.FILE_TYPE = {
-  REQUIREMENT: 0,
-  ASSETS: 1,
-  DESIGN: 2,
+  REQUIREMENT: { value: 0 },
+  ASSETS: { value: 1 },
+  DESIGN: { value: 2 },
 }
+
+const getBuiltInRoles = R.pipe(R.map(R.juxt([R.prop('key'), R.o(R.objOf('value'), R.prop('type'))])), R.fromPairs)
 
 module.exports.ROLE = {
-  BOSS: 0,
-  ADMIN: 1,
-  OPERATION: 2,
-  PRODUCT: 3,
-  DESIGNER: 4,
-  WEB: 5,
-  TESTER: 6,
-  SERVER: 7
-}
-
-module.exports.TASK_STATE = {
-  PREPARE: 0,
-  DOING: 1,
-  TESTING: 2,
-  DONE: 3,
-  PENDING: 4,
-  EXPIRED: 5
+  SUPER_ADMIN: { value: 0 },
+  ...getBuiltInRoles(rolesConfig)
 }
 
 module.exports.ACTION = {
-  CREATE: 0,
-  EDIT: 1,
-  CLOSE: 2,
-  PENDING: 3,
-  COMMENT: 4
+  CREATE: { value: 0 },
+  EDIT: { value: 1 },
+  CLOSE: { value: 2 },
+  PENDING: { value: 3 },
+  COMMENT: { value: 4 }
+}
+
+module.exports.TASK_STATE = {
+  PREPARE: { value: 0 },
+  DOING: { value: 1 },
+  DONE: { value: 2 },
+  PENDING: { value: 3 },
+  EXPIRED: { value: 4 }
 }
 
 module.exports.SORT = {
-  DESC: 0,
-  ASC: 1
+  DESC: { value: 0 },
+  ASC: { value: 1 }
 }

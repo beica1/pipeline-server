@@ -1,11 +1,15 @@
 /**
- * user.js of pipleline-server
- * Created by beica on 2020/1/3
+ * user.js of pipeline-server
+ * Created by beica on 2020/3/5
  */
-const db = require('../db/user')
+const { create, update, read, remove } = require('../db/user')
 
-module.exports.isLogged = db.isLogged
+module.exports.create = (obj, { user }) => create(user)
 
-module.exports.login = db.login
+module.exports.update = (obj, { userId, user }) => update(userId, user)
 
-module.exports.logout = db.logout
+module.exports.read = () => read()
+
+module.exports.remove = (obj, { userId }) => remove(userId)
+
+module.exports.readGroupUsers = group => read({ 'groups.groupId': group.groupId })

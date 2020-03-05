@@ -2,35 +2,21 @@
  * user.js of pipleline-server
  * Created by beica on 2020/1/2
  */
-const { GENDER } = require('../enum')
-const { guid } = require('../util/common')
-const { login } = require('../module/auth')
-
-const get = () => {
-  return new Promise((resolve => {
-    setTimeout(() => {
-      resolve([])
-    }, 3000)
-  }))
-}
+const { login, auth } = require('../module/auth')
+const { read, create, update, remove, readGroupUsers } = require('../module/user')
 
 module.exports = {
-  User: {
-    async tasks (obj, args, context) {
-      console.log(Object.keys(context))
-      return await get()
-    }
-  },
   Query: {
-    me: () => {
-      return {
-        id: guid(),
-        gender: GENDER.MALE,
-        regTime: new Date()
-      }
-    }
+    users: read
   },
   Mutation: {
-    login: async (obj, args, { res }) => await login(args, res)
+    login,
+    auth,
+    addUser: create,
+    updateUser: update,
+    removeUser: remove
+  },
+  Group: {
+    member: readGroupUsers
   }
 }

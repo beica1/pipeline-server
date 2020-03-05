@@ -1,0 +1,39 @@
+type Participant {
+  groupId: ID!
+  groupName: String
+  """
+  Previous Group
+  """
+  prev: Participant
+  """
+  Next Group
+  """
+  next: Participant
+}
+
+type Process {
+  processId: ID!
+  name: String
+  phases: [[Group]!]!
+}
+
+input InputPhase {
+  groupId: ID!
+  name: String!
+  desc: String
+  color: String
+}
+
+input InputProcess {
+  name: String
+  phases: [[InputPhase]!]!
+}
+
+extend type Query {
+  processes: [Process]!
+}
+
+extend type Mutation {
+  createProcess(process: InputProcess!): Process!
+  removeProcess(processId: ID!): ID!
+}

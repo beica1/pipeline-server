@@ -1,19 +1,12 @@
 const express = require('express')
 const graphqlHTTP = require('express-graphql')
 const { makeExecutableSchema } = require('graphql-tools')
-const jwt = require('express-jwt')
 const schema = require('./schema')
 const resolver = require('./resolver')
-const { login, parseToken, onError, PRIVATE_KEY } = require('./module/auth')
+const { onError, authMiddleware } = require('./module/auth')
+const { connect: connectDB } = require('./db')
 
 const app = express()
-
-const jwtMiddleware = jwt({
-  secret: PRIVATE_KEY,
-  getToken: parseToken
-}).unless({
-  path: ['/api/login', /\/api\/\/open.*/, /.*\/jsonp$/]
-})
 
 const graphqlMiddleware = graphqlHTTP({
   schema: makeExecutableSchema({
@@ -23,10 +16,12 @@ const graphqlMiddleware = graphqlHTTP({
   graphiql: true,
 })
 
-app.use('/api*', [jwtMiddleware, graphqlMiddleware])
+app.use('/api*', [authMiddleware, graphqlMiddleware])
 
 app.use(onError)
 
 app.listen(4000)
+
+connectDB()
 
 console.log('Running a GraphQL API server at http://localhost:4000/api')

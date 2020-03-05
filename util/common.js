@@ -12,3 +12,7 @@ const assembleGUIDPartials = R.o(
 const partialGuid = R.pipe(Math.random, R.add(1), R.multiply(0x10000), Math.floor, R.invoker(1, 'toString')(16), R.invoker(1, 'substring')(1))
 
 module.exports.guid = R.thunkify(assembleGUIDPartials)(partialGuid)
+
+module.exports.raiseError = e => {
+  throw e
+}

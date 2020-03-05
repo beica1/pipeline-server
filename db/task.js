@@ -2,10 +2,14 @@
  * task.js of pipleline-server
  * Created by beica on 2020/1/3
  */
-const db = require('./index')
+const R = require('ramda')
+const { query } = require('./index')
 
-const read = () => {}
+const collectionName = 'tasks'
 
-module.exports = {
-  read
-}
+const col = db => db.collection(collectionName)
+
+module.exports.read = () => query(async (db, resolve, reject) => {
+  const docs = await col(db).find().toArray()
+  resolve(docs)
+})

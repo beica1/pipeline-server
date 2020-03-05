@@ -1,0 +1,29 @@
+type Group {
+  groupId: ID!
+  name: String!
+  desc: String
+  color: String
+  member: [User]!
+}
+
+input InputGroupUser {
+  userId: ID!
+  name: String!
+}
+
+input InputGroup {
+  name: String!
+  desc: String!
+  color: String!
+  member: [InputGroupUser]
+  other: String
+}
+
+extend type Query {
+  groups: [Group]!
+}
+
+extend type Mutation {
+  addGroup(group: InputGroup!): Group!
+  removeGroup(groupId: ID!): ID!
+}

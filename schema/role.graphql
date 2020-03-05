@@ -1,8 +1,0 @@
-scalar RoleType
-
-type Role {
-  id: ID!
-  type: RoleType!
-  isAdmin: Boolean!
-  isSuperAdmin: Boolean!
-}

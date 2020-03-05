@@ -1,0 +1,12 @@
+scalar RoleType
+
+type Role {
+  roleId: ID!
+  name: String!
+  type: RoleType!
+  description: String
+}
+
+extend type Query {
+  roles: [Role]!
+}
