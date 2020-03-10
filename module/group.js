@@ -7,6 +7,12 @@ const { read, create, remove } = require('../db/group')
 
 module.exports.read = auth(() => read())
 
-module.exports.create = (obj, { group }) => create(group)
+module.exports.create = auth((obj, { group }) => create(group))
 
-module.exports.remove = (obj, { groupId }) => remove(groupId)
+module.exports.remove = auth((obj, { groupId }) => remove(groupId))
+
+module.exports.readUserGroups = auth((user) => read({
+  groupId: {
+    $in: user.groups
+  }
+}))

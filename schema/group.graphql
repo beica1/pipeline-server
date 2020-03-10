@@ -6,16 +6,11 @@ type Group {
   member: [User]!
 }
 
-input InputGroupUser {
-  userId: ID!
-  name: String!
-}
-
 input InputGroup {
   name: String!
   desc: String!
   color: String!
-  member: [InputGroupUser]
+  member: [ID]
   other: String
 }
 
@@ -24,6 +19,6 @@ extend type Query {
 }
 
 extend type Mutation {
-  addGroup(group: InputGroup!): Group!
+  addGroup(group: InputGroup!): ID!
   removeGroup(groupId: ID!): ID!
 }

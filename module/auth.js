@@ -4,7 +4,7 @@
  */
 const R = require('ramda')
 const jwt = require('jsonwebtoken')
-const ejwt = require('express-jwt')
+const eJwt = require('express-jwt')
 const { guid, raiseError } = require('../util/common')
 const { login } = require('../db/user')
 const { ROLE } = require('../enum')
@@ -80,7 +80,7 @@ const parseToken = R.pipe(
   R.nth(1)
 )
 
-module.exports.authMiddleware = ejwt({
+module.exports.authMiddleware = eJwt({
   secret: PRIVATE_KEY,
   getToken: parseToken
 }).unless({

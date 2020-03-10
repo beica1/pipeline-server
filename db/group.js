@@ -11,10 +11,11 @@ const col = db => db.collection(collectionName)
 
 /**
  * read groups
- * @returns {Promise<Array> | Object.s.promiseLibrary}
+ * @param filter {Object?}
+ * @returns {Promise<[Group]> | Object.s.promiseLibrary}
  */
-module.exports.read = () => query(async (db, resolve, reject) => {
-  const groups = await col(db).find().toArray()
+module.exports.read = filter => query(async (db, resolve, reject) => {
+  const groups = await col(db).find(filter).toArray()
   resolve(groups)
 })
 
@@ -24,7 +25,6 @@ module.exports.read = () => query(async (db, resolve, reject) => {
  * @returns {Promise<Object> | Object.s.promiseLibrary}
  */
 module.exports.create = group => query(async (db, resolve, reject) => {
-  console.log('create group data', group)
   const groupId = guid()
   const data = {
     groupId,
@@ -32,7 +32,7 @@ module.exports.create = group => query(async (db, resolve, reject) => {
   }
   try {
     await col(db).insertOne(data)
-    resolve(data)
+    resolve(groupId)
   } catch (e) {
     reject(e)
   }

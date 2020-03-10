@@ -14,33 +14,28 @@ type User {
   expiredIn: Date
 }
 
+input UserFilter {
+  roleId: ID
+  groupId: ID
+}
+
 extend type Query {
   me: User
-  users: [User]!
   user(userId: ID!): User
-}
-
-input InputUserRole {
-  roleId: ID!
-  name: String!
-}
-
-input InputUserGroup {
-  groupId: ID!
-  name: String!
+  users(filter: UserFilter): [User]!
 }
 
 input InputUser {
   name: String!
-  roles: [InputUserRole]!
-  groups: [InputUserGroup]!
+  roles: [ID]!
+  groups: [ID]!
   expiredIn: Date
 }
 
 extend type Mutation {
   login(user: String!, pwd: String!): User!
   auth(code: String!): User!
-  addUser(user: InputUser!): User!
+  addUser(user: InputUser!): ID!
   updateUser(userId: ID!, user: InputUser!): ID!
   removeUser(userId: ID!): ID!
 }

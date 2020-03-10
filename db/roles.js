@@ -40,9 +40,14 @@ const init = () => query(async (db, resolve, reject) => {
   }
 })
 
-module.exports.read = () => query(async (db, resolve, reject) => {
+/**
+ *
+ * @param filter {Object?}
+ * @returns {Promise | Promise<[Object]>}
+ */
+module.exports.read = filter => query(async (db, resolve, reject) => {
   try {
-    const docs = await col(db).find().toArray()
+    const docs = await col(db).find(filter).toArray()
     if (R.equals(docs.length, 0)) {
       await init()
       const docs = await col(db).find().toArray()

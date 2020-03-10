@@ -20,13 +20,12 @@ module.exports.login = (filter) => query(async (db, resolve, reject) => {
 })
 
 module.exports.create = user => query(async (db, resolve, reject) => {
-  const newUser = R.mergeRight(user, {
-    userId: guid()
-  })
+  const userId = guid()
+  const newUser = R.assoc('userId', userId, user)
   try {
     const result = await col(db).insertOne(newUser)
     if (R.propEq('insertedCount', 1, result)) {
-      resolve(newUser)
+      resolve(userId)
     }
   } catch (e) {
     reject(e)
@@ -42,6 +41,11 @@ module.exports.update = (userId, user) => query(async (db, resolve, reject) => {
   }
 })
 
+/**
+ * read User(s)
+ * @param filter {Object?}
+ * @returns {Promise | Promise<[User]>}
+ */
 module.exports.read = filter => query(async (db, resolve, reject) => {
   try {
     const docs = await col(db).find(filter).toArray()
