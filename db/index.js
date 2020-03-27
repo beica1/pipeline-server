@@ -16,16 +16,14 @@ const client = new Mongo(url, {
 })
 
 const onConnected = () => {
-  console.log('database connected')
+  console.log('Database connected')
 }
 
 const onConnectError = () => {
   console.error('database connect error')
 }
 
-module.exports.connect = () => {
-  client.connect().then(onConnected, onConnectError)
-}
+module.exports.connect = () => client.connect().then(onConnected, onConnectError)
 
 const getDB = () => client.db(config.dbName)
 

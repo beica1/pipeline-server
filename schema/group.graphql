@@ -10,8 +10,7 @@ input InputGroup {
   name: String!
   desc: String!
   color: String!
-  member: [ID]
-  other: String
+  member: [ID]!
 }
 
 extend type Query {

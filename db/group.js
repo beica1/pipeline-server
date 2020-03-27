@@ -11,7 +11,7 @@ const col = db => db.collection(collectionName)
 
 /**
  * read groups
- * @param filter {Object?}
+ * @param {Object} [filter]
  * @returns {Promise<[Group]> | Object.s.promiseLibrary}
  */
 module.exports.read = filter => query(async (db, resolve, reject) => {
@@ -21,7 +21,7 @@ module.exports.read = filter => query(async (db, resolve, reject) => {
 
 /**
  * create new group
- * @param group
+ * @param {Object} group
  * @returns {Promise<Object> | Object.s.promiseLibrary}
  */
 module.exports.create = group => query(async (db, resolve, reject) => {
@@ -40,11 +40,33 @@ module.exports.create = group => query(async (db, resolve, reject) => {
 
 /**
  * remove specified group item
- * @param groupId
+ * @param {String} groupId
  * @returns {Promise<String> | Object.s.promiseLibrary}
  */
 module.exports.remove = groupId => query((db, resolve, reject) => {
   col(db).findOneAndDelete({ groupId }).then(() => {
     resolve(groupId)
   }, reject)
+})
+
+/**
+ * 增加或移除指定组中的用户
+ * @param {String} groupId
+ * @param {String} userId
+ * @param {String} [mode='add'|'remove']
+ * @returns {Promise | Promise<String>}
+ */
+module.exports.updateGroupUser = (groupId, userId, mode = 'add') => query(async (db, resolve, reject) => {
+  const operation = mode === 'add' ? '$addToSet' : '$pull'
+  console.log(operation, groupId, userId)
+  try {
+    await col(db).findOneAndUpdate({ groupId }, {
+      [operation]: {
+        member: userId
+      }
+    })
+    resolve(userId)
+  } catch (e) {
+    reject(e)
+  }
 })

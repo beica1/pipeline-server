@@ -6,7 +6,7 @@ const R = require('ramda')
 const { read } = require('../db/roles')
 
 const check = (fn, obj, args, ctx) => {
-  console.log('auth check skipped')
+  // console.log('auth check skipped')
   return fn(obj, args, ctx)
 }
 

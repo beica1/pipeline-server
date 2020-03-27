@@ -15,14 +15,6 @@ const jwtOpts = {
   expiresIn: '1day'
 }
 
-module.exports.onError = (err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
-    res.status(401).json({
-      c: 401
-    })
-  }
-}
-
 /**
  * jwt token sign
  * @param user
