@@ -22,3 +22,22 @@ module.exports.store = (fileName, rStream) => query(async (db, resolve, reject) 
   rStream.pipe(writable)
 })
 
+module.exports.remove = fileId => query(async (db, resolve, reject) => {
+  const gridFS = new GridFS(db)
+  try {
+    await gridFS.delete(fileId)
+    resolve(fileId)
+  } catch (e) {
+    reject(e)
+  }
+})
+
+module.exports.read = fileId => query(async (db, resolve, reject) => {
+  const gridFS = new GridFS(db)
+  try {
+    const stream = gridFS.openDownloadStream(fileId)
+    resolve(stream)
+  } catch (e) {
+    reject(e)
+  }
+})
